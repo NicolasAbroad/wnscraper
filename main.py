@@ -16,21 +16,18 @@ def author(soup):
     for data in soup.find_all('div', class_='novel_writername'):
         return data.text.lstrip()[3:-2]                             # Author's name
 
-#for div in toc.find('div', class_='.character_title'):
-#    print(len(title.find('div', class_='.subtitle')))
-
-def book_title(soup):                                               # TBD - Obtain book titles and use in for loop
-    book_title = []
-    for book in range(len(soup.select('.chapter_title'))):
-        book_title += soup.select('.chapter_title')[book]
-    return book_title
-
 def chapter_url(soup):
-    chapter_urls = []
-    for chapter in range(len(soup.select('.subtitle'))):
-        chapter_urls += soup.select('.subtitle')[chapter].a['href']
-        #return chapter_urls[c].text.strip()
-        return chapter_urls                                         # TBD - Links broken
+    index = soup.find('div', class_='index_box')
+    children = index.children
+    url_dict = {}
+    volume = 0
+    for child in children:
+        if 'chapter_title' in str(child.encode('utf-8')):
+            url_dict.setdefault(child.string, [])
+            volume = child.string
+        elif 'subtitle' in str(child.encode('utf-8')):
+            url_dict[volume] += [child.a['href']]
+    return url_dict                                                 # Dictionnary file - key: volume name, values: chapter urls
 
 def head(soup):
     # Create folders
@@ -77,7 +74,7 @@ def head(soup):
           </head>
           <docTitle>
             <text>''' + 'book_name' + '''</text>
-          </docTitle>''')                               # Book name TBD
+          </docTitle>''')                                   # Book name TBD
     toc_head.close()
     # Create first half of content.opf
     content_head = open('content_head', 'w')
@@ -92,20 +89,21 @@ def head(soup):
            <dc:rights>Public Domain</dc:rights> 
            <dc:publisher>Nicolas</dc:publisher> 
            <dc:identifier id="bookid">urn:uuid:''' + rand + '''</dc:identifier>
-         </metadata>''')                                # Book name TBD
+         </metadata>''')                                    # Book name TBD
     content_head.close()
 
-def chapter():		                                      # Change argument to extracted chapter url list
-    url = 'https://ncode.syosetu.com/n8611bv/1'         # Change to input
+def chapter():                                              # Change argument to extracted chapter url list
+    url = 'https://ncode.syosetu.com/n8611bv/1'             # Change to input
     r = requests.get(url)
     r.raise_for_status()
     page = bs4.BeautifulSoup(r.content, "html.parser")
-    return page                                         # TBD - returns entire page at the moment
+    return page.find_all('div', attrs={'id':'novel_color'}) # TBD - returns entire page at the moment
 
 
 # Get author name
 # Get series name
-# TODO: Get volume names // If function for situation with no names
+# Get volume names and chapter urls
+# TODO: If function for situation with no names
 # TODO: For volume in volume names
     # Create mimetype, META-INF folder and OEBPS folder
     # Create head for content.opf and toc.ncx
@@ -114,8 +112,8 @@ def chapter():		                                      # Change argument to extra
     # TODO: For url in chapter urls
         # TODO: Get chapter name
         # TODO: Append appropriate line to bodies and spine (content, toc)
-        # TODO: Get xhtml content for every chapter
-        # TODO: Create XML file
+        # Get xhtml content for every chapter
+        # TODO: Create XHTML file
     # TODO: Complete toc.ncx and content.opf and join files
     # TODO: Create zip file
     # TODO: Add files to zip file
