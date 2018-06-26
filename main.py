@@ -9,31 +9,47 @@ import shutil
 import zipfile
 import random
 import re
-import sys          # Testing purposes
+import sys
 
-def series(soup):
-    return soup.select('.novel_title')[0].getText()                 # Series name
+def input_url_source_check(input_url):                                               # Check source
+    syosetu_source = re.compile(r'''
+                                ^((http:\/\/|https:\/\/)?
+                                (ncode.syosetu.com\/n))
+                                (\d{4}[a-z]{2}\/?)$''', re.X)
+    if re.match(syosetu_source, input_url):
+        return 'syosetu'
+    else:
+        raise ValueError('Please input URL correctly.')
+        input()
+        sys.exit()
+        
 
-def author(soup):
-    for data in soup.find_all('div', class_='novel_writername'):
-        return data.text.lstrip()[3:-2]                             # Author's name
+def series(soup, input_url_source):
+    if input_url_source == 'syosetu':
+        return soup.select('.novel_title')[0].getText()                 # Series name
 
-def chapter_names_and_urls(soup):
-    index = soup.find('div', class_='index_box')
-    index_sub_tags = index.children
-    url_dict = {}
-    volume = ''
-    for sub_tag in index_sub_tags:
-        sub_tag_str = str(sub_tag.encode('utf-8'))
-        if 'chapter_title' in sub_tag_str:
-            url_dict.setdefault(sub_tag.string, [])
-            volume = sub_tag.string
-        elif 'subtitle' in sub_tag_str:
-            if volume == '':
-                volume = series(soup)
-                url_dict.setdefault(series(soup), [])
-            url_dict[volume] += [(sub_tag.find('a').text, sub_tag.a['href'])]
-    return url_dict
+def author(soup, input_url_source):
+    if input_url_source == 'syosetu':
+        for data in soup.find_all('div', class_='novel_writername'):
+            return data.text.lstrip()[3:-2]                             # Author's name
+
+def chapter_names_and_urls(soup, input_url_source):
+    if input_url_source == 'syosetu':
+        index = soup.find('div', class_='index_box')
+        index_sub_tags = index.children
+        url_dict = {}
+        volume = ''
+        for sub_tag in index_sub_tags:
+            sub_tag_str = str(sub_tag.encode('utf-8'))
+            if 'chapter_title' in sub_tag_str:
+                url_dict.setdefault(sub_tag.string, [])
+                volume = sub_tag.string
+            elif 'subtitle' in sub_tag_str:
+                if volume == '':
+                    volume = series(soup)
+                    url_dict.setdefault(series(soup), [])
+                url_dict[volume] += [(sub_tag.find('a').text, sub_tag.a['href'])]
+        return url_dict
 
 def create_essential_files(epub_file):
     epub_file.writestr('mimetype', 'application/epub+zip')
@@ -175,20 +191,20 @@ def template_create(epub_file):
     epub_file.writestr('OEBPS/page-template.xpgt', template)
 
 def chapter_get_string(url):                                        # Change argument to extracted chapter url list
-    url = 'https://ncode.syosetu.com/n8611bv/1'                     # Change to input
-    r = requests.get(url)
-    r.raise_for_status()
-    page = bs4.BeautifulSoup(r.content, "html.parser")
+    if input_url_source == 'syosetu':
+        r = requests.get(url)
+        r.raise_for_status()
+        page = bs4.BeautifulSoup(r.content, "html.parser")
 
-    chapter_number = page.find('div', attrs={'id':'novel_no'})
-    chapter_number = chapter_number.text
+        chapter_number = page.find('div', attrs={'id':'novel_no'})
+        chapter_number = chapter_number.text
 
-    chapter_string = page.find('div', attrs={'id':'novel_honbun'})
-    chapter_string = chapter_string.text
-    chapter_string = chapter_string.strip()
-    chapter_string = chapter_number + '\n\n' + chapter_string
-    chapter_string = chapter_string.replace('\n', '</p>\n<p>')
-    return chapter_string
+        chapter_string = page.find('div', attrs={'id':'novel_honbun'})
+        chapter_string = chapter_string.text
+        chapter_string = chapter_string.strip()
+        chapter_string = chapter_number + '\n\n' + chapter_string
+        chapter_string = chapter_string.replace('\n', '</p>\n<p>')
+        return chapter_string
 
 def chapter_create_file(chapter_title, chapter_string, xhtml_name, epub_file):
     chapter_head = '''<?xml version="1.0" encoding="utf-8" standalone="no"?>
@@ -204,18 +220,19 @@ def chapter_create_file(chapter_title, chapter_string, xhtml_name, epub_file):
 
 #input_url = 'https://ncode.syosetu.com/n7975cr/'                    # Change to user input
 input_url = 'https://ncode.syosetu.com/n8611bv/'                    # Change to user input
+input_url_source = input_url_source_check(input_url)
 res = requests.get(input_url)
 res.raise_for_status()
 toc = bs4.BeautifulSoup(res.content, "html.parser")
 rand = 'nicolas' + str(random.randint(100000000000,999999999999))   # Random string for id
 
-series_name = series(toc)
-author_name = author(toc)
-volume_names = list(chapter_names_and_urls(toc).keys())
-chapter = chapter_names_and_urls(toc)
+series_name = series(toc, input_url_source)
+author_name = author(toc, input_url_source)
+volume_names = list(chapter_names_and_urls(toc, input_url_source).keys())
+chapter = chapter_names_and_urls(toc, input_url_source)
 
 for i, volume in enumerate(volume_names):
-#    if i == 1:
+#    if i == 1:                                                     # Test on the first volume of inputted url
 #        sys.exit()
     volume_formatted_name = '{0:02d}'.format(i+1) + ' - ' + volume
     epub_file_name = volume_formatted_name + '.epub'
@@ -228,7 +245,7 @@ for i, volume in enumerate(volume_names):
     content_string_first_half = content_create_start(volume_formatted_name, author_name, rand)
     content_string_second_half = content_create_middle()
 
-    volume_chapters = chapter_names_and_urls(toc)[volume]
+    volume_chapters = chapter_names_and_urls(toc, input_url_source)[volume]
     j = 1
     for tuple in range(len((volume_chapters))):
         chapter_url_end_unformatted = re.compile(r'\d+/$').findall(volume_chapters[tuple][1])
@@ -252,4 +269,4 @@ for i, volume in enumerate(volume_names):
     epub.close()
     print('Completed: ' + volume_formatted_name)
 
-input('All files completed!\nPress any button to exit.')
+input('All files completed!\nPress enter to exit.')
