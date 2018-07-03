@@ -16,69 +16,67 @@ import content
 import essential_files
 import nav
 import stylesheet
-import syosetu
+import scraper
 import template
-from toc import *
-
-def input_url_source_check(input_url):                                  # Check source
-    syosetu_source = re.compile(r'''
-                                ^((http:\/\/|https:\/\/)?
-                                (ncode.syosetu.com\/n))
-                                (\d{4}[a-z]{2}\/?)$''', re.X)
-    if re.match(syosetu_source, input_url):
-        return 'syosetu'
-    else:
-        raise ValueError('Please input URL correctly.')
-        input()
-        sys.exit()
+import toc
 
 #input_url = 'https://ncode.syosetu.com/n7975cr/'                    # Change to user input
-input_url = 'https://ncode.syosetu.com/n8611bv/'                    # Change to user input
-input_url_source = input_url_source_check(input_url)
-res = requests.get(input_url)
-res.raise_for_status()
-toc = bs4.BeautifulSoup(res.content, "html.parser")
-rand = 'nicolas' + str(random.randint(100000000000,999999999999))   # Random string for id
+input_url = 'https://ncode.syosetu.com/n8611bv/'            # Change to user input
+source = scraper.input_url_source_check(input_url)
+toc_html = scraper.get_page_html(input_url)
+rand = 'nicolas' + str(random.randint(100000000000,999999999999))   # Random string for uid
 
-#series_name = syosetu.series(toc, input_url_source)
-series_name = syosetu.Scraper.scrape_string(toc, 'p', 'novel_title')
-#author_name = syosetu.author(toc, input_url_source)
-author_name = syosetu.Scraper.scrape_string(toc, 'div', 'novel_writername')[4:-1]
-volume_names = list(syosetu.chapter_names_and_urls(toc, input_url_source).keys())
-chapter = syosetu.chapter_names_and_urls(toc, input_url_source)
+source_info = {'syosetu':{'series_name': ('p', 'novel_title'),
+                 'author_name': ('div', 'novel_writername'),
+                 'html_index': ('div', 'index_box'),
+                 'volume': ('div', 'class', 'chapter_title'),
+                 'vol_and_chap': ('chapter_title', 'subtitle'),
+                 'chap_name_url': ('a', 'href'),
+                 'chapter_number': ('div', 'id', 'novel_no'),
+                 'chapter_text': ('div', 'id', 'novel_honbun'),
+                 'url_regex': r'\d+/$'}}
+
+series_name = scraper.scrape_string(toc_html, source_info[source]['series_name'])
+author_name = scraper.scrape_string(toc_html, source_info[source]['author_name'])[4:-1]      # Include string removal in function
+
+# Querying info twice
+if scraper.volumes_exist(scraper.get_index_children(scraper.get_index(toc_html, source_info[source]['html_index'])), source_info[source]['vol_and_chap']):
+    volume_info = scraper.scrape_chapter_info_by_volume(scraper.get_index_children(scraper.get_index(toc_html, source_info[source]['html_index'])), source_info[source]['vol_and_chap'], source_info[source]['chap_name_url'])
+else:
+    volume_info = scraper.get_dict_key(series_name)
+    volume_info = scraper.scrape_chapter_info_by_chapter(volume_info, scraper.get_index_children(scraper.get_index(toc_html, source_info[source]['html_index'])), source_info[source]['vol_and_chap'], series_name, source_info[source]['chap_name_url'])
+
+volume_names = list(volume_info.keys())
 
 for i, volume in enumerate(volume_names):
-    if i == 1:                                                     # Test on the first volume of inputted url
-        sys.exit()
+#    if i == 2:                              # Used for testing
+#        sys.exit()
     volume_formatted_name = '{0:02d}'.format(i+1) + ' - ' + volume
+    volume_chapters = volume_info[volume]
+
     epub_file_name = volume_formatted_name + '.epub'
     epub = zipfile.ZipFile(epub_file_name, 'w')
-
     essential_files.create_essentials(epub)
-
-    toc_string = create_toc(rand, volume_formatted_name)
-
+    toc_string = toc.create_toc(rand, volume_formatted_name)
     content_string_first_half = content.create_content(volume_formatted_name, author_name, rand)
     content_string_second_half = content.create_middle()
 
-    volume_chapters = syosetu.chapter_names_and_urls(toc, input_url_source)[volume]
-    j = 1
-    for tuple in range(len((volume_chapters))):
-        chapter_url_end_unformatted = re.compile(r'\d+/$').findall(volume_chapters[tuple][1])
-        chapter_url_end_formatted = chapter_url_end_unformatted[0][:-1]
-        chapter_url = input_url + chapter_url_end_formatted
-        chapter_string = syosetu.chapter_get_string(chapter_url)
-        chapter_string = syosetu.chapter_string_check(chapter_string)
-        xhtml_name = 'chap' + str(j)
-        chapters.create_chapter(volume_chapters[tuple][0], chapter_string, xhtml_name, epub)
-        toc_string = add_nav(toc_string, xhtml_name, tuple)
-        
+    for j, (tuple_ch_name, tuple_ch_url) in enumerate(volume_chapters):
+        chapter_url = chapters.format_chapter_url(source_info[source]['url_regex'], tuple_ch_url, input_url)
+        chapter_html = scraper.get_page_html(chapter_url)
+        chapter_number = scraper.chapter_get_element_text(chapter_html, source_info[source]['chapter_number'])
+        chapter_text = scraper.chapter_get_element_text(chapter_html, source_info[source]['chapter_text'])
+        chapter_complete = scraper.chapter_truncate_name_to_string(chapter_number, chapter_text)
+        chapter_complete = scraper.chapter_string_replace_broken_characters(chapter_complete)
+
+        xhtml_name = 'chap' + str(j + 1)
+
+        chapters.create_chapter(tuple_ch_name, chapter_complete, xhtml_name, epub)
+        toc_string = toc.add_nav(toc_string, xhtml_name, str(j))
         content_string_first_half = content.add_item_id(content_string_first_half, xhtml_name)
         content_string_second_half = content.add_itemref(content_string_second_half, xhtml_name)
 
-        j += 1
-
-    finish_toc(toc_string, epub)
+    toc.finish_toc(toc_string, epub)
     content_string = content_string_first_half + content_string_second_half
     content.finish_content(content_string, epub)
     stylesheet.create_stylesheets(epub)
