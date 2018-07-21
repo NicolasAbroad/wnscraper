@@ -1,0 +1,21 @@
+scraper:
+
+
+server:
+download all volumes after after clicking on appropriate button
+
+
+Error handling:
+add "page has timed out" page (used after time has elapsed)
+add "page not found" page (used when faulty url is inputted)
+check url - if not working return error page
+
+Website:
+Make website look better
+
+
+No volumes
+https://ncode.syosetu.com/n1850ew/
+
+Volumes
+https://ncode.syosetu.com/n7103ev/

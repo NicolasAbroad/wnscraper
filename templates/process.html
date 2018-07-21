@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Processing...</title>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" type="text/css" href="/static/style.css"/>
+    </head>
+    <body>
+      <div id="container">
+
+        <div id='header'>
+        </div>
+
+      <div id="body">
+		<h2>{{series_name[0]}}</h2>
+		{% for volume in volume_names %}
+		<form action={{"/download/{}/{}/{}".format(series_name[1], volume[1], volume[2])}} method="POST">
+		<button class="volume_button">{{volume[0]}}</button>
+		</form>
+		{% endfor %}
+	  </div>
+
+    </div>
+    </body>
+</html>

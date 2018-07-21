@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <title>Login</title>
+    </head>
+    <body>
+	<link rel="stylesheet" href="/static/style.css" type="text/css">
+	{% block body %}
+	{% if session['logged_in'] %}
+		<p>Already logged in.</p>
+	{% else %}
+
+	<form action="/login" method="POST">
+	  <h1>Login</h1>
+
+	  <div>
+		<input type="text" placeholder="username" name="username" class='input_content'>
+	  </div>
+
+	  <div>
+		<input type="password" placeholder="password" name="password" class='input_content'>
+	  </div>
+
+	  <input type="submit" value="Log in" class='submit_content'>
+	</form>
+	 
+	{% endif %}
+	{% endblock %}
+
+    </body>
+</html>
