@@ -8,8 +8,8 @@ def create_chapter(chapter_title, chapter_string, xhtml_name, epub_file):
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="utf-8" />
-<link rel="stylesheet" type="text/css" href="vertical.css" class="vertical" title="vertical" />
-<link rel="alternate stylesheet" type="text/css" href="horizontal.css" class="horizontal" title="horizontal" />
+<link rel="stylesheet" type="text/css" href="horizontal.css" class="horizontal" title="horizontal" />
+<link rel="alternate stylesheet" type="text/css" href="vertical.css" class="vertical" title="vertical" />
 <title>''' + chapter_title + '''</title>
 </head>
 <body>''' + '\n<h1>' + chapter_title + '</h1>\n<p> '

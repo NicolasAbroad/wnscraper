@@ -58,9 +58,10 @@ def process():
 #            session.clear()
         input_url = request.form['input_content']
         source = main.get_source(input_url)
+        if source == False:
+            return render_template('invalid.html')
         source_info = main.get_info(input_url, source)
 
-        session['info'] = source_info
         session['url'] = input_url
 
         series_name = source_info[source]['info']['series_name']
@@ -74,27 +75,14 @@ def process():
         return render_template('process.html', series_name=series_name_formatted, volume_names=volume_names_formatted)
 
 
-""" WORKING!
-@app.route('/download/<series_name>/<volume_name_formatted>/<volume_name>', methods=['POST'])
-def download(series_name, volume_name_formatted, volume_name):
-    if request.method == 'POST':
-        source_info = session.get('info')
-        input_url = session.get('url')
-        source = main.get_source(input_url)
-        source_info = main.get_info(input_url, source)
-        main.generate_single_volume(source_info, volume_name)
-        return send_file('download/{}/{}.epub'.format(series_name, volume_name_formatted), as_attachment=True)
-WORKING! """
-
-
-@app.route('/download/<series_name>/<volume_name_formatted>/<volume_name>', methods=['POST'])
-def download(series_name, volume_name_formatted, volume_name):
+@app.route('/download/<volume_name_formatted>/<volume_name>', methods=['POST'])
+def download(volume_name_formatted, volume_name):
     if request.method == 'POST':
         input_url = session.get('url')
         source = main.get_source(input_url)
         source_info = main.get_info(input_url, source)
         memory_file = io.BytesIO()
-        memory_file = main.generate_single_volume_memory(memory_file, source_info, volume_name)
+        memory_file = main.generate_single_volume_to_memory(memory_file, source_info, volume_name)
         memory_file.seek(0)
         return send_file(memory_file, attachment_filename='{}.epub'.format(volume_name_formatted), as_attachment=True)
 
@@ -102,9 +90,16 @@ def download(series_name, volume_name_formatted, volume_name):
 @app.route('/download_all/<series_name>', methods=['POST'])
 def download_all(series_name):
     if request.method == 'POST':
-        return send_file('download_all/{}.epub'.format(series_name), as_attachment=True)
+        input_url = session.get('url')
+        source = main.get_source(input_url)
+        source_info = main.get_info(input_url, source)
+        memory_file = io.BytesIO()
+        memory_file = main.generate_all_volumes_to_memory(memory_file, source_info)
+        memory_file.seek(0)
+        return send_file(memory_file, attachment_filename='{}.zip'.format(series_name), as_attachment=True)
 
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
-    app.run(debug=True, port=5000)
+#    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5000, host='0.0.0.0')

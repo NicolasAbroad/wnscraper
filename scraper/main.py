@@ -2,6 +2,7 @@
 # main.py - Web novel scraper used to make ebooks separated by volume.
 # Currently only supports syosetu.com
 
+import io
 import zipfile
 
 from check_url import check_url
@@ -36,7 +37,7 @@ def get_info(input_url, source):
     author_name = query_info.get_string(toc_html, source_info[source]['html']['author_name'])
     author_name = parse_info.format_author(source, author_name)
 
-    # Impossible to factorize
+    # Unable to factorize
     if query_info.volumes_exist(query_info.get_index_children(query_info.get_index(toc_html, source_info[source]['html']['html_index'])), source_info[source]['html']['vol_and_chap']):
         volume_info = query_info.scrape_chapter_info_by_volume(query_info.get_index_children(query_info.get_index(toc_html, source_info[source]['html']['html_index'])), source_info[source]['html']['vol_and_chap'], source_info[source]['html']['chap_name_url'])
     else:
@@ -89,8 +90,6 @@ def generate_all_volumes_to_disk(source_info):
             chapter_number = chapters.chapter_get_text_for_element(chapter_html, source_info[source]['html']['chapter_number'])
             chapter_text = chapters.chapter_get_text_for_element(chapter_html, source_info[source]['html']['chapter_text'])
             chapter_complete = chapters.combine_name_and_text(chapter_number, chapter_text)
-#            chapter_complete = chapters.chapter_truncate_name_to_string(chapter_number, chapter_text)
-#            chapter_complete = chapters.chapter_string_replace_broken_characters(chapter_complete)
 
             xhtml_name = 'chap' + str(j)
             chapters.create_chapter(tuple_ch_name, chapter_complete, xhtml_name, epub)
@@ -110,6 +109,65 @@ def generate_all_volumes_to_disk(source_info):
         print('Completed: ' + volume_formatted_name)
 
     print('All files completed!')
+
+
+def generate_all_volumes_to_memory(memory_file, source_info):
+    input_url = source_info['input_url']
+    source = source_info['source']
+    series_name = source_info[source]['info']['series_name']
+    author_name = source_info[source]['info']['author_name']
+    volume_names = source_info[source]['info']['volume_names']
+    volume_info = source_info[source]['info']['volume_info']
+    uid = source_info[source]['info']['uid']
+
+    buffer_all = io.BytesIO()
+    all_volumes = zipfile.ZipFile(buffer_all, 'w')
+
+    for i, volume in enumerate(volume_names.keys()):
+#        if i == 1:
+#            break
+        volume_formatted_name = '{0:02d}'.format(i+1) + ' - ' + volume
+        volume_chapters = volume_info[volume]
+
+        epub_file_name = volume_formatted_name + '.epub'
+        buffer_single = io.BytesIO()
+        epub = zipfile.ZipFile(buffer_single, 'w')
+
+        mimetype.create_mimetype(epub)
+        container.create_container(epub)
+        toc_string = toc.create_toc(uid, volume_formatted_name)
+        content_string_first_half = content.create_content(volume_formatted_name, author_name, uid)
+        content_string_second_half = content.create_middle()
+
+        for j, (tuple_ch_name, tuple_ch_url) in enumerate(volume_chapters):
+            chapter_url = chapters.format_chapter_url(source_info[source]['html']['url_regex'], tuple_ch_url, input_url)
+            chapter_html = query_info.get_page_html(chapter_url)
+            chapter_number = chapters.chapter_get_text_for_element(chapter_html, source_info[source]['html']['chapter_number'])
+            chapter_text = chapters.chapter_get_text_for_element(chapter_html, source_info[source]['html']['chapter_text'])
+            chapter_complete = chapters.combine_name_and_text(chapter_number, chapter_text)
+
+            xhtml_name = 'chap' + str(j)
+            chapters.create_chapter(tuple_ch_name, chapter_complete, xhtml_name, epub)
+
+            toc_string = toc.add_nav(toc_string, xhtml_name, str(j))
+
+            content_string_first_half = content.add_item_id(content_string_first_half, xhtml_name)
+            content_string_second_half = content.add_itemref(content_string_second_half, xhtml_name)
+
+        toc.finish_toc(toc_string, epub)
+        content_string = content_string_first_half + content_string_second_half
+        content.finish_content(content_string, epub)
+        stylesheet.create_stylesheets(epub)
+        nav.create_nav(epub)
+        template.create_template(epub)
+        epub.close()
+        buffer_single.seek(0)
+        all_volumes.writestr(epub_file_name, buffer_single.read())
+        buffer_single.close()
+        print('Completed: ' + volume_formatted_name)
+
+    all_volumes.close()
+    return buffer_all
 
 
 def generate_single_volume_to_disk(source_info, volume_name):
@@ -140,8 +198,6 @@ def generate_single_volume_to_disk(source_info, volume_name):
         chapter_number = chapters.chapter_get_text_for_element(chapter_html, source_info[source]['html']['chapter_number'])
         chapter_text = chapters.chapter_get_text_for_element(chapter_html, source_info[source]['html']['chapter_text'])
         chapter_complete = chapters.combine_name_and_text(chapter_number, chapter_text)
-#            chapter_complete = chapters.chapter_truncate_name_to_string(chapter_number, chapter_text)
-#            chapter_complete = chapters.chapter_string_replace_broken_characters(chapter_complete)
 
         xhtml_name = 'chap' + str(j)
         chapters.create_chapter(tuple_ch_name, chapter_complete, xhtml_name, epub)
@@ -161,7 +217,7 @@ def generate_single_volume_to_disk(source_info, volume_name):
     print('Completed: ' + volume_formatted_name)
 
 
-def generate_single_volume_memory(memory_file, source_info, volume_name):
+def generate_single_volume_to_memory(memory_file, source_info, volume_name):
     input_url = source_info['input_url']
     source = source_info['source']
     series_name = source_info[source]['info']['series_name']

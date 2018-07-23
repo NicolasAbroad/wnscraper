@@ -12,6 +12,4 @@ def input_url_source_check(input_url):
         if re.match(regex, input_url):
             return key
         else:
-            raise ValueError('Please input URL correctly.')
-            input()
-            sys.exit()
+            return False
