@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+{% block app_content %}
+  <h1>{{ _('Register a new account') }}</h1>
+  <div>
+    <form action="" method="POST" novalidate>
+      {{ form.hidden_tag() }}
+      <p class="register-medium">
+        {{ form.username.label }}<br>
+        {{ form.username(size=32) }}
+        {% for error in form.username.errors %}
+        <span>[{{ error }}]</span>
+        {% endfor %}
+      </p>
+      <p class="register-medium">
+        {{ form.email.label }}<br>
+        {{ form.email(size=32) }}
+        {% for error in form.username.errors %}
+        <span>[{{ error }}]</span>
+        {% endfor %}
+      </p>
+      <p class="register-medium">
+        {{ form.password.label }}<br>
+        {{ form.password(size=32) }}
+      </p>
+      <p class="register-medium">
+        {{ form.password2.label }}<br>
+        {{ form.password2(size=32) }}
+      </p>
+      <p class="register-small">{{ form.submit() }}</p>
+    </form>
+  </div>
+{% endblock %}

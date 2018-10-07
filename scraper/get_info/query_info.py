@@ -47,7 +47,7 @@ def scrape_chapter_info_by_volume(index_children, name_element, target_info_elem
             index_child_str = str(index_child)
             if name_element[0] in index_child_str:
                 volume = index_child.string
-                volume = parse_info.correct_volume_name(volume)
+                volume = parse_info.format_volume_name_to_html(volume)
                 chapter_info_dict.setdefault(volume, [])         # index_child_str = volume name
             elif name_element[1] in index_child_str:
                 ch_name = index_child.find(target_info_element[0])

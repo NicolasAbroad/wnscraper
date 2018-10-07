@@ -1,0 +1,159 @@
+<!-- All icons provided by icomoon.io -->
+
+{% extends 'bootstrap/base.html' %}
+
+{% block title %}
+  {% if title %}Web Novel Scraper - {{ title }}
+  {% else %}Web Novel Scraper
+  {% endif %}
+{% endblock %}
+
+{% block styles %}
+  {{ super() }}
+    <!-- Custom stylesheet -->
+    <link href="{{ url_for('.static', filename='custom.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block scripts %}
+  {{ super() }}
+  {{ moment.include_moment() }}
+  {{ moment.lang(g.locale) }}
+{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url_for('index') }}">WNScraper</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                    <li>
+                      <a class=”navbar-button” href="{{ url_for('index') }}">
+                        <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                          <symbol id="icon-home3" viewBox="0 0 32 32">
+                            <title>home3</title>
+                            <path d="M32 19l-6-6v-9h-4v5l-6-6-16 16v1h4v10h10v-6h4v6h10v-10h4z"></path>
+                          </symbol>
+                        </svg>
+                        <svg class="icon icon-home3">
+                          <use xlink:href="#icon-home3"></use>
+                        </svg>
+                        {{ _('Home') }}
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{ url_for('scrape') }}" id="scrape-button">
+                        <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                          <symbol id="icon-book" viewBox="0 0 32 32">
+                            <title>book</title>
+                            <path d="M28 4v26h-21c-1.657 0-3-1.343-3-3s1.343-3 3-3h19v-24h-20c-2.2 0-4 1.8-4 4v24c0 2.2 1.8 4 4 4h24v-28h-2z"></path>
+                            <path d="M7.002 26v0c-0.001 0-0.001 0-0.002 0-0.552 0-1 0.448-1 1s0.448 1 1 1c0.001 0 0.001-0 0.002-0v0h18.997v-2h-18.997z"></path>
+                          </symbol>
+                        </svg>
+                        <svg class="icon icon-book">
+                          <use xlink:href="#icon-book"></use>
+                        </svg>
+                        {{ _('Scrape!') }}
+                      </a>
+                    </li>
+                    <li>
+                      <a href="{{ url_for('github_repository') }}">
+                        <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                          <symbol id="icon-github" viewBox="0 0 32 32">
+                            <title>github</title>
+                            <path d="M16 0.395c-8.836 0-16 7.163-16 16 0 7.069 4.585 13.067 10.942 15.182 0.8 0.148 1.094-0.347 1.094-0.77 0-0.381-0.015-1.642-0.022-2.979-4.452 0.968-5.391-1.888-5.391-1.888-0.728-1.849-1.776-2.341-1.776-2.341-1.452-0.993 0.11-0.973 0.11-0.973 1.606 0.113 2.452 1.649 2.452 1.649 1.427 2.446 3.743 1.739 4.656 1.33 0.143-1.034 0.558-1.74 1.016-2.14-3.554-0.404-7.29-1.777-7.29-7.907 0-1.747 0.625-3.174 1.649-4.295-0.166-0.403-0.714-2.030 0.155-4.234 0 0 1.344-0.43 4.401 1.64 1.276-0.355 2.645-0.532 4.005-0.539 1.359 0.006 2.729 0.184 4.008 0.539 3.054-2.070 4.395-1.64 4.395-1.64 0.871 2.204 0.323 3.831 0.157 4.234 1.026 1.12 1.647 2.548 1.647 4.295 0 6.145-3.743 7.498-7.306 7.895 0.574 0.497 1.085 1.47 1.085 2.963 0 2.141-0.019 3.864-0.019 4.391 0 0.426 0.288 0.925 1.099 0.768 6.354-2.118 10.933-8.113 10.933-15.18 0-8.837-7.164-16-16-16z"></path>
+                          </symbol>
+                        </svg>
+                        <svg class="icon icon-github">
+                          <use xlink:href="#icon-github"></use>
+                        </svg>
+                        {{ _('Github repository') }}
+                      </a>
+                    </li>
+
+                    {% if current_user.is_authenticated %}
+                    <li>
+                      <a href="{{ url_for('requests_history', username=current_user.username) }}">
+                        <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                          <symbol id="icon-history" viewBox="0 0 34 32">
+                            <title>history</title>
+                            <path d="M20 2c7.732 0 14 6.268 14 14s-6.268 14-14 14v-3c2.938 0 5.701-1.144 7.778-3.222s3.222-4.84 3.222-7.778c0-2.938-1.144-5.701-3.222-7.778s-4.84-3.222-7.778-3.222c-2.938 0-5.701 1.144-7.778 3.222-1.598 1.598-2.643 3.601-3.041 5.778h5.819l-7 8-7-8h5.143c0.971-6.784 6.804-12 13.857-12zM26 14v4h-8v-10h4v6z"></path>
+                          </symbol>
+                        </svg>
+                        <svg class="icon icon-history">
+                          <use xlink:href="#icon-history"></use>
+                        </svg>
+                        {{ _('History') }}
+                      </a>
+                    </li>
+                    {% endif %}
+                    <li><a href="{{ url_for('about') }}">{{ _('About') }}</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                  {% if CURRENT_LANGUAGE == 'ja' %}
+                  <li><a href="{{ url_for('set_language', language='en') }}">English</a></li>
+                  {% elif CURRENT_LANGUAGE == 'en' %}
+                  <li><a href="{{ url_for('set_language', language='ja') }}">日本語</a></li>
+                  {% endif %}
+                  {% if current_user.is_anonymous %}
+                  <li>
+                    <a href="{{ url_for('login') }}">
+                      <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <symbol id="icon-user" viewBox="0 0 32 32">
+                          <title>user</title>
+                          <path d="M18 22.082v-1.649c2.203-1.241 4-4.337 4-7.432 0-4.971 0-9-6-9s-6 4.029-6 9c0 3.096 1.797 6.191 4 7.432v1.649c-6.784 0.555-12 3.888-12 7.918h28c0-4.030-5.216-7.364-12-7.918z"></path>
+                        </symbol>
+                      </svg>
+                      <svg class="icon icon-user">
+                        <use xlink:href="#icon-user"></use>
+                      </svg>
+                      {{ _('Login') }}
+                    </a>
+                  </li>
+                  {% else %}
+                  <li>
+                    <a href="{{ url_for('logout') }}">
+                      <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <symbol id="icon-exit" viewBox="0 0 32 32">
+                          <title>exit</title>
+                          <path d="M24 20v-4h-10v-4h10v-4l6 6zM22 18v8h-10v6l-12-6v-26h22v10h-2v-8h-16l8 4v18h8v-6z"></path>
+                        </symbol>
+                      </svg>
+                      <svg class="icon icon-exit">
+                        <use xlink:href="#icon-exit"></use>
+                      </svg>
+                      {{ _('Logout') }}
+                    </a>
+                  </li>
+                  {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+{% endblock %}
+
+{% block content %}
+  <div class="container">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-warning">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% block app_content %}{% endblock %}
+  </div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block app_content %}
+  <h1>{{ user.username }}</h1>
+  <hr>
+  {% if requests != [] %}
+  <a href="{{ url_for('delete_all_requests', username=user.username) }}">{{ _('Clear history') }}</a><br>
+  {% else %}
+  <h2>{{ _('Your request history is empty') }}</h2>
+  {% endif %}
+  {% for request in requests %}
+  <div class="request-history">
+    {{ _('Series name: ') }}{{ request.series_name }}<br>
+    <form action="{{ url_for('download', volume_number=request.volume_number, input_url=request.url[-8:-1]) }}" method="POST">
+    <button class="btn">{{ _('Volume name: ') }}{{ request.volume_name }}</button>
+    </form>
+    {{ _('Volume number: %(number)s', number=request.volume_number) }}<br>
+    URL: <a href="{{ request.url }}">{{ request.url }}</a><br>
+    {{ moment(request.timestamp).format('LLL') }}<br>
+    <a href="{{ url_for('delete_single_request', username=current_user.username, request_id=request.id) }}">{{ _('Delete') }}</a>
+  </div>
+  <br>
+  {% endfor %}
+{% endblock %}

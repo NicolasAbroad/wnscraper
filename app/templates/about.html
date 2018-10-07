@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block app_content %}
+  <div class="about">
+    <h3>{{ _("About this website") }}</h3>
+    <p>{{ _("This website was made to help me learn a number of basic programming concepts.") }}</p>
+    <br>
+    <h4>{{ _("Programming languages used:") }}</h4>
+    <ul class="about-list">
+      <li>Python 3</li>
+      <li>{{ _("HTML (Technically not a programming language)") }}</li>
+      <li>{{ _("CSS (Technically not a programming language)") }}</li>
+    </ul>
+    <br>
+    <h4>{{ _("Main python modules used for epub file generation:") }}</h4>
+    <ul class="about-list">
+      <li>Requests</li>
+      <li>Beautiful Soup 4</li>
+    </ul>
+    <br>
+    <h4>{{ _("Web framework used:") }}</h4>
+    <ul class="about-list">
+      <li>Flask</li>
+    </ul>
+    <br>
+    <h4>{{ _("Front-end framework used:") }}</h4>
+    <ul class="about-list">
+      <li>Bootstrap</li>
+    </ul>
+    <br>
+    <h4>{{ _("Database engine used:") }}</h4>
+    <ul class="about-list">
+      <li>SQL (SQLite)</li>
+    </ul>
+    <br>
+    <h4>{{ _("Things I want to add in the future:") }}</h4>
+    <ul class="about-list">
+      <li>{{ _("Procedurally generate book covers based on name of the series") }}</li>
+      <li>{{ _("Add statistics (most downloaded series, etc.)") }}</li>
+      <li>{{ _("Create a browser extension doing what this website does (thus making this website obsolete)") }}</li>
+    </ul>
+  </div>
+{% endblock %}

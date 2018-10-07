@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block app_content %}
+<div id="body">
+  <h2>WNScraper</h2>
+  <div id="description">
+    <h3>{{ _("Description") }}</h3>
+    <p>{{ _("WNScraper is a simple web scraper designed to get the content of any web novel from the website ") }}<a href="https://syosetu.com/" style="color: black;"><b>https://syosetu.com/</b></a>{{ _(", and turn it into an epub file.") }}</br></br>
+      {{ _("Epub files are generated per volume. If there are no volumes, one epub file containing every chapter is generated.") }}
+      <br><br><b>{{ _("Disclaimer: ") }}</b>{{ _("None of the generated ebook files are saved on our servers.") }}
+    </p>
+  </div>
+  <h3>{{ _("How to use the service") }}</h3>
+  <div class="row">
+    {% if CURRENT_LANGUAGE == 'ja' %}
+    <div class="column"><img style="vertical-align: middle;" src="{{ url_for('static', filename='login-ja.png') }}">
+    {% elif CURRENT_LANGUAGE == 'en' %}
+    <div class="column"><img style="vertical-align: middle;" src="{{ url_for('static', filename='login-en.png') }}">
+    {% endif %}
+    <p>{{ _("Log in (or sign up)") }}</p></div>
+
+    {% if CURRENT_LANGUAGE == 'ja' %}
+    <div class="column"><img style="vertical-align: middle;" src="{{ url_for('static', filename='scrape-ja.png') }}">
+    {% elif CURRENT_LANGUAGE == 'en' %}
+    <div class="column"><img style="vertical-align: middle;" src="{{ url_for('static', filename='scrape-en.png') }}">
+    {% endif %}
+    <p>{{ _("Select Scrape! on the navigation bar") }}</p></div>
+
+    {% if CURRENT_LANGUAGE == 'ja' %}
+    <div class="column"><img style="vertical-align: middle;" src="{{ url_for('static', filename='link-ja.png') }}">
+    {% elif CURRENT_LANGUAGE == 'en' %}
+    <div class="column"><img style="vertical-align: middle;" src="{{ url_for('static', filename='link-en.png') }}">
+    {% endif %}
+    <p>{{ _("Enter the link to a series") }}</p></div>
+
+    {% if CURRENT_LANGUAGE == 'ja' %}
+    <div class="column"><img style="vertical-align: middle;" src="{{ url_for('static', filename='download-ja.png') }}">
+    {% elif CURRENT_LANGUAGE == 'en' %}
+    <div class="column"><img style="vertical-align: middle;" src="{{ url_for('static', filename='download-en.png') }}">
+    {% endif %}
+    <p>{{ _("Choose a volume to download, or simply choose to download everything") }}</p></div>
+
+    <div class="column"><p>{{ _("Transfer the epub files to your favorite ebook reader") }}</p></div>
+    <div class="column"><p>{{ _("Enjoy!") }}</p></div>
+  </div>
+</div>
+{% endblock %}

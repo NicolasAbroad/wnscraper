@@ -1,0 +1,321 @@
+# Japanese translations for PROJECT.
+# Copyright (C) 2018 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2018-09-20 18:22+0900\n"
+"PO-Revision-Date: 2018-09-04 22:25+0900\n"
+"Last-Translator: Nicolas <EMAIL@ADDRESS>\n"
+"Language: ja\n"
+"Language-Team: ja <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.6.0\n"
+
+#: app/__init__.py:19
+msgid "Please log in to access this page."
+msgstr "ログインしてください"
+
+#: app/forms.py:9 app/forms.py:16
+msgid "Username"
+msgstr "ユーザーID"
+
+#: app/forms.py:10 app/forms.py:18
+msgid "Password"
+msgstr "パスワード"
+
+#: app/forms.py:11
+msgid "Remember me"
+msgstr "ログイン情報を保存"
+
+#: app/forms.py:12 app/routes.py:148 app/templates/login.html:3
+msgid "Sign in"
+msgstr "ログイン"
+
+#: app/forms.py:17
+msgid "Email"
+msgstr "メールアドレス"
+
+#: app/forms.py:19
+msgid "Repeat password"
+msgstr "パスワードを再度ご入力ください"
+
+#: app/forms.py:20 app/routes.py:128
+msgid "Register"
+msgstr "アカウント登録"
+
+#: app/forms.py:34
+msgid "Link to webnovel"
+msgstr "小説へのリンク"
+
+#: app/forms.py:35 app/templates/scrape.html:10
+msgid "Submit"
+msgstr "Epubを作成"
+
+#: app/routes.py:36
+msgid "Homepage"
+msgstr "ホームページ"
+
+#: app/routes.py:47 app/templates/base.html:97
+msgid "About"
+msgstr "このウェブサイトについて"
+
+#: app/routes.py:53
+msgid "Scrape"
+msgstr "Epub作成"
+
+#: app/routes.py:66 app/routes.py:91
+msgid "Unable to connect to the webnovel's host website"
+msgstr "小説のサーバーに接続できませんでした"
+
+#: app/routes.py:73
+msgid "Please enter a valid url. For example: https://ncode.syosetu.com/n7103ev/"
+msgstr "正しいリンクをご入力ください"
+
+#: app/routes.py:75
+msgid "Processing..."
+msgstr "処理中"
+
+#: app/routes.py:126
+msgid "You have successfully been registered."
+msgstr "登録しました"
+
+#: app/routes.py:139
+msgid "Invalid username or password"
+msgstr "ユーザーIDあるいはパスワードが間違っています"
+
+#: app/routes.py:146
+#, python-format
+msgid "Logged in as %(username)s"
+msgstr "%(username)sがログインしました"
+
+#: app/routes.py:156
+msgid "You have successfully logged out."
+msgstr "ログアウトしました"
+
+#: app/routes.py:167
+msgid "Requests history"
+msgstr "履歴"
+
+#: app/templates/404.html:3
+msgid "Error 404: File Not Found"
+msgstr "エラー404：ファイルが見つかりませんでした"
+
+#: app/templates/500.html:3
+msgid "Error 500: An unexpected error has occurred"
+msgstr "エラー500"
+
+#: app/templates/500.html:4
+msgid "The administrator has been notified. Sorry for the inconvenience."
+msgstr ""
+
+#: app/templates/500.html:5
+msgid "Back"
+msgstr "戻る"
+
+#: app/templates/about.html:4
+msgid "About this website"
+msgstr "このウェブサイトについて"
+
+#: app/templates/about.html:5
+msgid ""
+"This website was made to help me learn a number of basic programming "
+"concepts."
+msgstr "独学でプログラミングの勉強中ですので、プログラミングの基礎を覚える為にこのサービスを作りました。"
+
+#: app/templates/about.html:7
+msgid "Programming languages used:"
+msgstr "プログラミング言語："
+
+#: app/templates/about.html:10
+msgid "HTML (Technically not a programming language)"
+msgstr "HTML（厳密に言えば、プログラミング言語と異なりますが）"
+
+#: app/templates/about.html:11
+msgid "CSS (Technically not a programming language)"
+msgstr "CSS（HTMLと同様にプログラミング言語ではありませんが）"
+
+#: app/templates/about.html:14
+msgid "Main python modules used for epub file generation:"
+msgstr "電子書籍ファイル生成に使用されたPythonモジュール："
+
+#: app/templates/about.html:20
+msgid "Web framework used:"
+msgstr "ウェブフレームワーク："
+
+#: app/templates/about.html:25
+msgid "Front-end framework used:"
+msgstr "フロントエンドフレームワーク："
+
+#: app/templates/about.html:30
+msgid "Database engine used:"
+msgstr "データベースエンジン："
+
+#: app/templates/about.html:35
+msgid "Things I want to add in the future:"
+msgstr "今後追加したい機能："
+
+#: app/templates/about.html:37
+msgid "Procedurally generate book covers based on name of the series"
+msgstr "自動生成技術を利用して電子書籍の表紙生成。"
+
+#: app/templates/about.html:38
+msgid "Add statistics (most downloaded series, etc.)"
+msgstr "ランキングなどの統計（最もダウンロードされたシリーズなど）。"
+
+#: app/templates/about.html:39
+msgid ""
+"Create a browser extension doing what this website does (thus making this"
+" website obsolete)"
+msgstr "電子書籍生成のブラウザ拡張機能（このウェブサイトが不要になるが）。"
+
+#: app/templates/base.html:48
+msgid "Home"
+msgstr "ホームページ"
+
+#: app/templates/base.html:63
+msgid "Scrape!"
+msgstr "Epub作成"
+
+#: app/templates/base.html:77
+msgid "Github repository"
+msgstr "Github レポジトリー"
+
+#: app/templates/base.html:93
+msgid "History"
+msgstr "履歴"
+
+#: app/templates/base.html:117
+msgid "Login"
+msgstr "ログイン"
+
+#: app/templates/base.html:132
+msgid "Logout"
+msgstr "ログアウト"
+
+#: app/templates/home.html:6
+msgid "Description"
+msgstr "簡単な説明"
+
+#: app/templates/home.html:7
+msgid ""
+"WNScraper is a simple web scraper designed to get the content of any web "
+"novel from the website "
+msgstr "WNScraperはウェブスクレイパーであって、"
+
+#: app/templates/home.html:7
+msgid ", and turn it into an epub file."
+msgstr "より小説の内容をスクレイピングし、電子書籍（Epubのみ）を作成します。"
+
+#: app/templates/home.html:8
+msgid ""
+"Epub files are generated per volume. If there are no volumes, one epub "
+"file containing every chapter is generated."
+msgstr "電子書籍ファイルが冊毎に作成されます。区別されない場合は、1冊に全話をまとめます。"
+
+#: app/templates/home.html:9
+msgid "Disclaimer: "
+msgstr "免責条項："
+
+#: app/templates/home.html:9
+msgid "None of the generated ebook files are saved on our servers."
+msgstr "当サイトのサーバーに電子書籍ファイルが保存されません。"
+
+#: app/templates/home.html:12
+msgid "How to use the service"
+msgstr "NScrapeの使い方"
+
+#: app/templates/home.html:19
+msgid "Log in (or sign up)"
+msgstr "アカウントにログイン（あるいはアカウントを作成）。"
+
+#: app/templates/home.html:26
+msgid "Select Scrape! on the navigation bar"
+msgstr "Epub作成を選択"
+
+#: app/templates/home.html:33
+msgid "Enter the link to a series"
+msgstr "小説のリンクを入力。"
+
+#: app/templates/home.html:40
+msgid "Choose a volume to download, or simply choose to download everything"
+msgstr "一巻を選択してダウンロードか、全巻を選択してダウンロードか。"
+
+#: app/templates/home.html:42
+msgid "Transfer the epub files to your favorite ebook reader"
+msgstr "電子書籍をリーダーに移動。"
+
+#: app/templates/home.html:43
+msgid "Enjoy!"
+msgstr "お楽しみに！"
+
+#: app/templates/login.html:24
+msgid "Not registered yet? Click here to create an account!"
+msgstr "アカウントをお持ちでない方はこちらを押すとアカウント登録ができます"
+
+#: app/templates/process.html:3
+msgid "Series: "
+msgstr "小説名"
+
+#: app/templates/process.html:4
+msgid ""
+"Depending on the length of the series, it can take a while to generate "
+"the epub files."
+msgstr "小説の長さによって、電子書籍ファイルの処理に時間がかかる事がありますので、しばらくお待ちください。"
+
+#: app/templates/process.html:6
+msgid "Download all volumes"
+msgstr "全巻をダウンロード"
+
+#: app/templates/process.html:12
+msgid "Download by volume"
+msgstr "一巻ごとにダウンロード"
+
+#: app/templates/register.html:4
+msgid "Register a new account"
+msgstr "アカウント登録"
+
+#: app/templates/requests_history.html:6
+msgid "Clear history"
+msgstr "履歴を全削除"
+
+#: app/templates/requests_history.html:8
+msgid "Your request history is empty"
+msgstr "履歴には何もありません"
+
+#: app/templates/requests_history.html:12
+msgid "Series name: "
+msgstr "シリーズ名："
+
+#: app/templates/requests_history.html:14
+msgid "Volume name: "
+msgstr "小説名："
+
+#: app/templates/requests_history.html:16
+#, python-format
+msgid "Volume number: %(number)s"
+msgstr "第%(number)s巻"
+
+#: app/templates/requests_history.html:19
+msgid "Delete"
+msgstr "削除"
+
+#: app/templates/scrape.html:6
+msgid "Enter URL address you wish to scrape"
+msgstr "小説のリンクをご入力ください"
+
+#~ msgid "Note: "
+#~ msgstr "注意："
+
+#~ msgid ""
+#~ "epub files are generated per volume. "
+#~ "If there are no volumes, one epub"
+#~ " file containing every chapter is "
+#~ "generated."
+#~ msgstr "電子書籍ファイルが冊毎に作成されます。区別されない場合は、1冊に全話をまとめます。"

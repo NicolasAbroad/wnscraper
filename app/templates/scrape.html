@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block app_content %}
+  <div id="body">
+  <h1>WNScrape</h1>
+    <fieldset>
+    <legend>{{ _('Enter URL address you wish to scrape') }}</legend>
+    <div class='form-group'>
+      <form action="{{ url_for('process') }}" method='POST'>
+        <input class="form-control" type="url" name="input_url" placeholder="https://ncode.syosetu.com/n7975cr/">
+        <input type="submit" value="{{ _('Submit') }}" class='submit_content'>
+      </form>
+    </div>
+    </fieldset>
+  </div>
+{% endblock %}
