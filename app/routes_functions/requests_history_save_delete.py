@@ -1,5 +1,5 @@
 from app import db
-from app.models import RequestHistory
+from app.models import requesthistory
 from flask_login import current_user
 from scraper.get_info import parse_info
 
@@ -10,7 +10,7 @@ def save_single(source_info, volume_number, volume_name):
 
     single = {'series_name': series_name, 'volume_name': volume_name,
               'volume_number': volume_number, 'url': input_url, 'user_id': current_user.id}
-    db.session.execute(RequestHistory.__table__.insert(), single)
+    db.session.execute(requesthistory.__table__.insert(), single)
     db.session.commit()
 
 
@@ -22,15 +22,15 @@ def save_all(source_info):
     requests = [{'series_name': series_name, 'volume_name': volume_names[volume_number],
                 'volume_number': volume_number, 'url': input_url,
                 'user_id': current_user.id} for volume_number in volume_names]
-    db.session.execute(RequestHistory.__table__.insert(), requests)
+    db.session.execute(requesthistory.__table__.insert(), requests)
     db.session.commit()
 
 
 def delete_single(request_id):
-    RequestHistory.query.filter_by(id=request_id).delete()
+    requesthistory.query.filter_by(id=request_id).delete()
     db.session.commit()
 
 
 def delete_all(user_id):
-    RequestHistory.query.filter_by(user_id=user_id).delete()
+    requesthistory.query.filter_by(user_id=user_id).delete()
     db.session.commit()

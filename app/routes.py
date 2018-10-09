@@ -4,7 +4,7 @@ from app import app, db
 from flask_login import current_user, login_user, logout_user, login_required
 from flask_babel import _, get_locale
 from werkzeug.urls import url_parse
-from app.models import User, RequestHistory
+from app.models import users, requesthistory
 from app.forms import LoginForm, RegistrationForm
 from scraper import scraper
 from scraper.get_info import parse_info
@@ -163,7 +163,7 @@ def requests_history(username):
     if username == current_user.username:
         user = User.query.filter_by(username=username).one()
         id = user.id
-        requests = RequestHistory.query.filter_by(user_id=id).all()
+        requests = requesthistory.query.filter_by(user_id=id).all()
         return render_template('requests_history.html', title=_('Requests history'), user=user, requests=requests)
 
 
