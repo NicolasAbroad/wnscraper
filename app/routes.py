@@ -118,7 +118,7 @@ def register():
         return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
+        user = users(username=form.username.data, email=form.email.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
@@ -134,7 +134,7 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = users.query.filter_by(username=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash(_('Invalid username or password'))
             return redirect(url_for('login'))
@@ -161,7 +161,7 @@ def logout():
 @login_required
 def requests_history(username):
     if username == current_user.username:
-        user = User.query.filter_by(username=username).one()
+        user = users.query.filter_by(username=username).one()
         id = user.id
         requests = requesthistory.query.filter_by(user_id=id).all()
         return render_template('requests_history.html', title=_('Requests history'), user=user, requests=requests)
@@ -182,7 +182,7 @@ def delete_single_request(username, request_id):
 @login_required
 def delete_all_requests(username):
     if username == current_user.username:
-        user = User.query.filter_by(username=username).first_or_404()
+        user = users.query.filter_by(username=username).first_or_404()
         user_id = user.id
         requests_history_save_delete.delete_all(user_id)
         logger.info('%s deleted all requests from history' % current_user.username)
@@ -212,24 +212,24 @@ def debug():
 
 @app.route('/debug/users')
 def debug_users():
-    usernames = User.query.order_by(User.id).all()
+    usernames = users.query.order_by(users.id).all()
     return render_template('debug_users.html', usernames=usernames)
 
 
 @app.route('/debug/requests')
 def debug_requests():
-    all_requests = RequestHistory.query.order_by(RequestHistory.user_id).all()
+    all_requests = requesthistory.query.order_by(requesthistory.user_id).all()
     return render_template('debug_requests.html', requests=all_requests)
 
 
 @app.route('/debug/add_requests')
 def debug_add_requests():
-    n1 = RequestHistory(series_name='One Punch Man', volume_number='01', volume_name='Baldness', url='https://ncode.syosetu.com/n7103ev/', user_id=1)
-    n2 = RequestHistory(series_name='One Punch Man', volume_number='02', volume_name='Justice', url='https://www.google.com/one-punch-man/volume2', user_id=1)
-    n3 = RequestHistory(series_name='One Punch Man', volume_number='03', volume_name='Caped baldy', url='https://www.google.com/one-punch-man/volume3', user_id=1)
-    m1 = RequestHistory(series_name='One Piece', volume_number='01', volume_name='Straw Hat', url='https://www.google.com/one-piece/volume1', user_id=2)
-    m2 = RequestHistory(series_name='One Piece', volume_number='02', volume_name='Rubbery', url='https://www.google.com/one-piece/volume2', user_id=2)
-    m3 = RequestHistory(series_name='One Piece', volume_number='03', volume_name='Meat', url='https://www.google.com/one-piece/volume3', user_id=2)
+    n1 = requesthistory(series_name='One Punch Man', volume_number='01', volume_name='Baldness', url='https://ncode.syosetu.com/n7103ev/', user_id=1)
+    n2 = requesthistory(series_name='One Punch Man', volume_number='02', volume_name='Justice', url='https://www.google.com/one-punch-man/volume2', user_id=1)
+    n3 = requesthistory(series_name='One Punch Man', volume_number='03', volume_name='Caped baldy', url='https://www.google.com/one-punch-man/volume3', user_id=1)
+    m1 = requesthistory(series_name='One Piece', volume_number='01', volume_name='Straw Hat', url='https://www.google.com/one-piece/volume1', user_id=2)
+    m2 = requesthistory(series_name='One Piece', volume_number='02', volume_name='Rubbery', url='https://www.google.com/one-piece/volume2', user_id=2)
+    m3 = requesthistory(series_name='One Piece', volume_number='03', volume_name='Meat', url='https://www.google.com/one-piece/volume3', user_id=2)
     db.session.add(n1)
     db.session.add(n2)
     db.session.add(n3)
@@ -243,7 +243,7 @@ def debug_add_requests():
 
 @app.route('/debug/clear_requests')
 def debug_clear_requests():
-    all_requests = RequestHistory.query.all()
+    all_requests = requesthistory.query.all()
     for request in all_requests:
         db.session.delete(request)
     db.session.commit()
@@ -253,9 +253,9 @@ def debug_clear_requests():
 
 @app.route('/debug/requests/<username>')
 def debug_filter_requests(username):
-    user = User.query.filter_by(username=username).one()
+    user = users.query.filter_by(username=username).one()
     id = user.id
-    requests = RequestHistory.query.filter_by(user_id=id).all()
+    requests = requesthistory.query.filter_by(user_id=id).all()
     return render_template('debug_requests_filter.html', user=user, requests=requests)
 
 

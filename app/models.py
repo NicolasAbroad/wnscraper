@@ -9,7 +9,7 @@ class users(UserMixin, db.Model):
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    requests = db.relationship('RequestHistory', backref='author', lazy='dynamic')
+    requests = db.relationship('requesthistory', backref='author', lazy='dynamic')
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
@@ -29,7 +29,7 @@ class requesthistory(db.Model):
     volume_number = db.Column(db.String(4))
     url = db.Column(db.String(1800))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __repr__(self):
         return '<Request {}>'.format(self.body)
@@ -37,4 +37,4 @@ class requesthistory(db.Model):
 
 @login.user_loader
 def load_user(id):
-    return User.query.get(int(id))
+    return users.query.get(int(id))
