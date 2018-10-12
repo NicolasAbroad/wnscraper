@@ -204,6 +204,46 @@ def github_repository():
         logger.info('Anonymous user redirected to github repository')
     return redirect('https://github.com/NicolasAbroad/epub_scraper')
 
+
+@app.route('/test')
+def debug():
+    return render_template('test.html')
+
+
+@app.route('/test-useragent')
+def test_useragent():
+    url = 'https://wnscraper.herokuapp.com/index'
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+    res = requests.get(url, headers=headers)
+    res.raise_for_status()
+    return '{}'.format(res.content.decode())
+
+
+@app.route('/test-no-useragent')
+def test_no_useragent():
+    url = 'https://wnscraper.herokuapp.com/index'
+    res = requests.get(url)
+    res.raise_for_status()
+    return '{}'.format(res.content.decode())
+
+
+@app.route('/test-syosetu')
+def test_syosetu_with_useragent():
+    url = 'https://ncode.syosetu.com/n7103ev/'
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
+    res = requests.get(url, headers=headers)
+    res.raise_for_status()
+    return '{}'.format(res.content.decode())
+
+
+@app.route('/test-syosetu')
+def test_syosetu_no_useragent():
+    url = 'https://ncode.syosetu.com/n7103ev/'
+    res = requests.get(url)
+    res.raise_for_status()
+    return '{}'.format(res.content.decode())
+
+
 """
 @app.route('/debug')
 def debug():

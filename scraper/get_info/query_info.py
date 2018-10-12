@@ -8,7 +8,8 @@ from . import parse_info
 
 
 def get_page_html(url):
-    res = requests.get(url)
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:62.0) Gecko/20100101 Firefox/62.0'}
+    res = requests.get(url, headers=headers)
     res.raise_for_status()
     soup = bs4.BeautifulSoup(res.content, "html.parser")
     return soup
