@@ -232,7 +232,7 @@ def test_syosetu_with_useragent():
     url = 'https://ncode.syosetu.com/n7103ev/'
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'}
     res = requests.get(url, headers=headers)
-    res.raise_for_status()
+#    res.raise_for_status()
     return '{}'.format(res.content.decode())
 
 
@@ -240,7 +240,7 @@ def test_syosetu_with_useragent():
 def test_syosetu_no_useragent():
     url = 'https://ncode.syosetu.com/n7103ev/'
     res = requests.get(url)
-    res.raise_for_status()
+#    res.raise_for_status()
     return '{}'.format(res.content.decode())
 
 
