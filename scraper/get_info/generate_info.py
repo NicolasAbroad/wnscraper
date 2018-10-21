@@ -1,8 +1,4 @@
 # generate_info.py - generates information to be parsed
-
-
-import secrets
-import string
 import random
 
 
