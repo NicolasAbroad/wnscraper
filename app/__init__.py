@@ -44,9 +44,9 @@ if not app.debug:
     file_handler = RotatingFileHandler('logs/webapp.log', maxBytes=10240, backupCount=10)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)
-    file_handler.setLevel(logging.INFO)
+    file_handler.setLevel(logging.DEBUG)
     logger.addHandler(file_handler)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     logger.info('Webapp startup')
 
 from app import routes, models, errors
