@@ -139,7 +139,7 @@ def login():
             flash(_('Invalid username or password'))
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        logger.info('Logged in')
+        logger.info('Logged in: %s' % current_user.username)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
@@ -152,7 +152,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    logger.info('Logged out')
+    logger.info('Logged out: %s' % current_user.username)
     flash(_('You have successfully logged out.'))
     return redirect(url_for('index'))
 
