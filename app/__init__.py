@@ -40,7 +40,7 @@ if not app.debug:
     if __name__ == 'app':
         logger = logging.getLogger(__name__)
     else:
-        logger = logging.getLogger('gunicorn.errors')
+        logger = logging.getLogger('gunicorn.error')
     file_handler = RotatingFileHandler('logs/webapp.log', maxBytes=10240, backupCount=10)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)
