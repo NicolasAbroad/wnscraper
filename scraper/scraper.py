@@ -10,7 +10,7 @@ from get_info import generate_info, parse_info, query_info
 from create_epub import chapters, container, content, folders, mimetype, nav, stylesheet, template, toc
 
 
-logger = logging.getLogger('__name__')
+logger = logging.getLogger('wnscraper')
 
 
 def check_source(input_url):
