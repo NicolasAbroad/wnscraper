@@ -14,7 +14,10 @@ import logging
 import requests         # Used for connection error exception
 
 
-logger = logging.getLogger(__name__)
+if __name__ == 'app':
+    logger = logging.getLogger(__name__)
+else:
+    logger = logging.getLogger('gunicorn.error')
 
 
 @app.before_request
