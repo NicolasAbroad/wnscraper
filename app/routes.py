@@ -14,7 +14,11 @@ import logging
 import requests         # Used for connection error exception
 
 
+<<<<<<< HEAD
 logger = logging.getLogger('wnscraper')
+=======
+logger = logging.getLogger(__name__)
+>>>>>>> parent of ba9c4ae... Update logger
 
 
 @app.before_request

@@ -3,3 +3,4 @@ launch.bat
 logs
 venv
 **__pycache__
+app/todo.txt
