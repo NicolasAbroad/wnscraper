@@ -37,7 +37,8 @@ def get_locale():
 if not app.debug:
     if not os.path.exists('logs'):
         os.mkdir('logs')
-    logger = logging.getLogger('wnscraper')
+    logger = logging.getLogger(__name__)
+#    logger = logging.getLogger('wnscraper')
     file_handler = RotatingFileHandler('logs/webapp.log', maxBytes=10240, backupCount=10)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)

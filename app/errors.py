@@ -4,7 +4,8 @@ from app import app, db
 import logging
 
 
-logger = logging.getLogger('wnscraper')
+logger = logging.getLogger(__name__)
+#logger = logging.getLogger('wnscraper')
 
 
 @app.errorhandler(404)
