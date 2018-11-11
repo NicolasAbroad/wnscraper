@@ -11,6 +11,7 @@ from scraper.get_info import parse_info
 from app.routes_functions import download_volume, requests_history_save_delete
 from datetime import datetime
 import logging
+import operator
 import requests         # Used for connection error exception
 
 
@@ -34,6 +35,7 @@ def inject_config_var():
 @app.route('/')
 @app.route('/index')
 def index():
+    app.logger.info('Homepage')
     return render_template('home.html', title=_('Homepage'))
 
 
@@ -70,6 +72,7 @@ def process():      #TODO rename
             series_name = parse_info.retrieve_series_name_from(source_info)
             series_name_formatted = (series_name, series_name.replace(' ', '%20'))
             volume_names = parse_info.retrieve_volume_names_from(source_info)
+            volume_names = sorted(volume_names.items())
         else:
             flash(_('Please enter a valid url. For example: https://ncode.syosetu.com/n7103ev/'))
             return redirect(url_for('scrape'))
@@ -96,7 +99,7 @@ def download(volume_number, input_url=None):            #TODO rename
         volume_name = volume_names[volume_number]
         requests_history_save_delete.save_single(source_info,volume_number, volume_name)
         series_name = parse_info.retrieve_series_name_from(source_info)
-        logger.info('%s downloaded one volume - Series: %s - Volume: %s' % (current_user.username, series_name, volume_name))
+        app.logger.info('%s downloaded one volume - Series: %s - Volume: %s' % (current_user.username, series_name, volume_name))
         volume_name_formatted = parse_info.format_volume_name(volume_number, volume_name)
         return send_file(memory_file, attachment_filename='{}.epub'.format(volume_name_formatted), as_attachment=True)
 
@@ -109,7 +112,7 @@ def download_all(series_name):
         source_info = scraper.create_source_info(input_url)
         memory_file = download_volume.download_all_volumes(source_info)
         requests_history_save_delete.save_all(source_info)
-        logger.info('%s downloaded all volumes - Series: %s' % (current_user.username, series_name))
+        app.logger.info('%s downloaded all volumes - Series: %s' % (current_user.username, series_name))
         return send_file(memory_file, attachment_filename='{}.zip'.format(series_name), as_attachment=True)
 
 
@@ -123,7 +126,7 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        logger.info('New user registered: %s' % user.username)
+        app.logger.info('New user registered: %s' % user.username)
         flash(_('You have successfully been registered.'))
         return redirect(url_for('login'))
     return render_template('register.html', title=_('Register'), form=form)
@@ -140,7 +143,7 @@ def login():
             flash(_('Invalid username or password'))
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
-        logger.info('Logged in: %s' % current_user.username)
+        app.logger.info('Logged in: %s' % current_user.username)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
@@ -152,8 +155,8 @@ def login():
 @app.route('/logout')
 @login_required
 def logout():
+    app.logger.info('Logged out: %s' % current_user.username)
     logout_user()
-    logger.info('Logged out: %s' % current_user.username)
     flash(_('You have successfully logged out.'))
     return redirect(url_for('index'))
 
@@ -173,10 +176,10 @@ def requests_history(username):
 def delete_single_request(username, request_id):
     if username == current_user.username:
         requests_history_save_delete.delete_single(request_id)
-        logger.info('%s deleted one request from history' % current_user.username)
+        app.logger.info('%s deleted one request from history' % current_user.username)
         return redirect(url_for('requests_history', username=current_user.username))
     else:
-        logger.warn('Illegal deletion request from %s' % current_user.username)
+        app.logger.warn('Illegal deletion request from %s' % current_user.username)
 
 
 @app.route('/<username>/history/delete_all')
@@ -186,10 +189,10 @@ def delete_all_requests(username):
         user = users.query.filter_by(username=username).first_or_404()
         user_id = user.id
         requests_history_save_delete.delete_all(user_id)
-        logger.info('%s deleted all requests from history' % current_user.username)
+        app.logger.info('%s deleted all requests from history' % current_user.username)
         return redirect(url_for('requests_history', username=current_user.username))
     else:
-        logger.warn('Illegal deletion request from %s' % current_user.username)
+        app.logger.warn('Illegal deletion request from %s' % current_user.username)
 
 
 @app.route('/invalid')
@@ -200,9 +203,9 @@ def invalid():
 @app.route('/github-repository')
 def github_repository():
     if current_user.is_authenticated:
-        logger.info('%s redirected to github repository' % current_user.username)
+        app.logger.info('%s redirected to github repository' % current_user.username)
     else:
-        logger.info('Anonymous user redirected to github repository')
+        app.logger.info('Anonymous user redirected to github repository')
     return redirect('https://github.com/NicolasAbroad/epub_scraper')
 
 

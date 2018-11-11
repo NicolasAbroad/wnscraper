@@ -2,6 +2,7 @@
 # scraper.py - Web novel scraper used to make ebooks separated by volume.
 # Currently only supports syosetu.com
 
+from app import app
 import io
 import logging
 import zipfile
@@ -17,9 +18,9 @@ logger = logging.getLogger(__name__)
 def check_source(input_url):
     source = check_url.input_url_source_check(input_url)
     if source:
-        logger.debug('Source url: %s' % source)
+        app.logger.debug('Scraper - Source url: %s' % source)
     else:
-        logger.warn('Invalid url inputted')
+        app.logger.warn('Scraper - Invalid url inputted')
     return source
 
 
@@ -34,23 +35,37 @@ def get_info(input_url, source):
     author_name = parse_info.format_author(source, author_name)
 
     # Unable to factorize
-    if query_info.volumes_exist(query_info.get_index_children(query_info.get_index(toc_html, source_info[source]['html']['html_index'])), source_info[source]['html']['vol_and_chap']):
-        volume_info = query_info.scrape_chapter_info_by_volume(query_info.get_index_children(query_info.get_index(toc_html, source_info[source]['html']['html_index'])), source_info[source]['html']['vol_and_chap'], source_info[source]['html']['chap_name_url'])
+#    if query_info.volumes_exist(query_info.get_index_children(query_info.get_index(toc_html, source_info[source]['html']['html_index'])), source_info[source]['html']['vol_and_chap']):
+#        volume_info = query_info.scrape_chapter_info_by_volume(query_info.get_index_children(query_info.get_index(toc_html, source_info[source]['html']['html_index'])), source_info[source]['html']['vol_and_chap'], source_info[source]['html']['chap_name_url'])
+    html_index_id = source_info[source]['html']['html_index']
+    vol_and_chap_id = source_info[source]['html']['vol_and_chap']
+    chap_name_url_id = source_info[source]['html']['chap_name_url']
+    
+    index = query_info.get_index(toc_html, html_index_id)
+    index_children = query_info.get_index_children(index)
+    
+    if query_info.volumes_exist(index_children, vol_and_chap_id):
+        volume_info = query_info.scrape_chapter_info_by_volume(query_info.get_index_children(index), vol_and_chap_id, chap_name_url_id)
+
     else:
         volume_info = query_info.get_dict_key(series_name)
         volume_info = query_info.scrape_all_chapter_info(volume_info, query_info.get_index_children(query_info.get_index(toc_html, source_info[source]['html']['html_index'])), source_info[source]['html']['vol_and_chap'], series_name, source_info[source]['html']['chap_name_url'])
 
-    volume_names = parse_info.extract_volume_names_and_numbers(volume_info)
+#    volume_names = parse_info.extract_volume_names_and_numbers(volume_info)
+    volume_names = parse_info.extract_volume_names(query_info.get_index_children(index), vol_and_chap_id)
+#    info = volume_info['info']
+#    volume_names = volume_info['names']
 
     source_info['input_url'] = input_url
     source_info['source'] = source
     source_info[source]['info'] = {'series_name': series_name,
                             'author_name': author_name,
-                            'volume_info': volume_info,
+                            'volume_info':volume_info,
                             'volume_names': volume_names,
                             'uid': uid,
                             'request_id': 'PLACEHOLDER'}
-    logger.debug('Source info retrieved')
+    app.logger.debug('Scraper - Source info retrieved')
+    app.logger.debug('%s' % source_info)
     return source_info
 
 
@@ -169,7 +184,7 @@ def generate_all_volumes_to_memory(memory_file, source_info):
         buffer_single.close()
 
     all_volumes.close()
-    logger.debug('All volumes written to memory - Series: %s' % series_name)
+    app.logger.debug('Scraper - All volumes written to memory - Series: %s' % series_name)
     return buffer_all
 
 
@@ -264,7 +279,7 @@ def generate_single_volume_to_memory(memory_file, source_info, volume_number):
     nav.create_nav(epub)
     template.create_template(epub)
     epub.close()
-    logger.debug('One volume written to memory - Series: %s - Volume name: %s' % (series_name, volume_name))
+    app.logger.debug('Scraper - One volume written to memory - Series: %s - Volume name: %s' % (series_name, volume_name))
     return memory_file
 
 

@@ -20,13 +20,30 @@ def format_author(source, author_name):
         author_name = author_name[4:-1]
     return author_name
 
-
+"""
 def extract_volume_names(volume_info):
     volume_names = {}
     for index, volume in enumerate(list(volume_info.keys())):
         volume_name_formatted = '{0:02d}'.format(index+1) + ' - ' + volume
         volume_name_formatted_html = '{0:02d}'.format(index+1) + '%20-%20' + volume.replace(' ', '%20')
         volume_names[volume] = (volume_name_formatted, volume_name_formatted_html)
+    return volume_names
+"""
+
+def extract_volume_names(index_children, name_id):
+    volume_names = {}
+    volume_name = ''
+    volume_id = name_id[0]
+    nb = 1
+    for index_child in index_children:
+        index_child_str = str(index_child)
+        if volume_id in index_child_str:
+            volume_name = index_child.string
+            volume_name = format_volume_name_to_html(volume_name)
+
+            nb_formatted = '{0:02d}'.format(nb)
+            volume_names[nb_formatted] = volume_name
+            nb += 1
     return volume_names
 
 

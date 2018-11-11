@@ -7,7 +7,7 @@ import logging
 logger = logging.getLogger(__name__)
 #logger = logging.getLogger('wnscraper')
 
-
+"""
 @app.errorhandler(404)
 def not_found_error(error):
     if current_user.is_authenticated:
@@ -25,3 +25,4 @@ def internal_error(error):
         logger.info('Anonymous - error 500')
     db.session.rollback()
     return render_template('500.html'), 500
+"""

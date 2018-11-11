@@ -34,17 +34,21 @@ def get_locale():
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
-if not app.debug:
+if __name__ != '__main__':
     if not os.path.exists('logs'):
         os.mkdir('logs')
-    logger = logging.getLogger(__name__)
-#    logger = logging.getLogger('wnscraper')
-    file_handler = RotatingFileHandler('logs/webapp.log', maxBytes=10240, backupCount=10)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    file_handler.setFormatter(formatter)
-#    file_handler.setLevel(logging.INFO)
-    logger.addHandler(file_handler)
-    logger.setLevel(logging.DEBUG)
-    logger.info('Webapp startup')
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
+    app.logger.info('Webapp startup')
+    #logger = logging.getLogger(__name__)
+    #logger = logging.getLogger('wnscraper')
+    #file_handler = RotatingFileHandler('logs/webapp.log', maxBytes=10240, backupCount=10)
+    #formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    #file_handler.setFormatter(formatter)
+    #file_handler.setLevel(logging.DEBUG)
+    #logger.addHandler(file_handler)
+    #logger.setLevel(logging.DEBUG)
+    #logger.info('Webapp startup')
 
 from app import routes, models, errors

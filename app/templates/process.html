@@ -10,9 +10,9 @@
   </div>
   <div class="download-single">
     <h3>{{ _('Download by volume') }}</h2>
-    {% for volume_number in volume_names %}
-    <form action="{{ url_for('download', volume_number=volume_number) }}" method="POST">
-      <button class="download-button">{{ volume_number }} - {{ volume_names[volume_number] }}</button>
+    {% for volume in volume_names %}
+    <form action="{{ url_for('download', volume_number=volume[0]) }}" method="POST">
+      <button class="download-button">{{ volume[0] }} - {{ volume[1] }}</button>
     </form>
     {% endfor %}
   </div>
