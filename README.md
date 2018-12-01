@@ -1,8 +1,10 @@
 # WNScraper
 
-This is the source code for the WNScraper website. It is mainly composed of two parts: the website and the website scraper/epub generator.
-So far, the website has been designed to turn the content of any web novel from the website https://ncode.syosetu.com/ into epub files, provided that the url for the novel is submitted to the website.
-The epub files are generated per volume, with the options to download epub files individually, or everything contained in one big zip folder.
+This is the source code for the WNScraper website.
+
+WNScraper converts the content of any web novel from the website https://ncode.syosetu.com/ （小説家になろう） into epub files.
+
+The epub files are generated per volume. You can download each epub file individually or a zip file containing every volume.
 
 
 ### Prerequisites
