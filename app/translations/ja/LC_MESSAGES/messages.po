@@ -237,7 +237,7 @@ msgstr "アカウントにログイン（あるいはアカウントを作成）
 
 #: app/templates/home.html:26
 msgid "Select Scrape! on the navigation bar"
-msgstr "Epub作成を選択"
+msgstr "Epub作成を選択。"
 
 #: app/templates/home.html:33
 msgid "Enter the link to a series"
